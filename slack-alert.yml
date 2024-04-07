@@ -1,13 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alertmanager
+data:
+  alertmanager.yml: |
     global:
       resolve_timeout: 1m
-      slack_api_url: 'http://hooks.slack.com/services/xxxxxxxxxxxxxxxxxxxxxx' #TODO: Enter your Slack Webhook URL here
+
     receivers:
-    - name: 'slack-notificaions'
+    - name: 'notifications'
       slack_configs:
-      - channel: '#upcommerce-devs' # TODO: Create a Slack Channel named upcommerce-devs in your Slack
+      - channel: '#upcommerce-devs'
         send_resolved: true
+        api_url: ${SLACK_WEBHOOK}
+
     route:
-      group_interval: 5m
       group_wait: 10s
-      receiver: 'slack-notificaions'
-      repeat_interval: 1h
+      group_interval: 2m
+      receiver: 'notifications'
+      repeat_interval: 2m
